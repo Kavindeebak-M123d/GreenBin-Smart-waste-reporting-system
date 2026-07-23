@@ -210,9 +210,3 @@ open wastewatch.html      # macOS
 - Map view of reports using their GPS coordinates
 - SMS notifications as an alternative to email
 - Role-based access for multiple staff members with individual logins
-
----
-
-## 10. License
-
-Add your preferred license here (e.g. MIT) before publishing.
