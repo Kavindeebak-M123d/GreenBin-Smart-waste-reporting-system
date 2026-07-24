@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">GreenBin – Smart Waste Reporting System</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+</head>
+<body class="is-logged-out">
+
+  <!-- HEADER / NAVBAR -->
+  <header class="navbar" id="top">
+    <div class="navbar__inner">
+      <a href="#top" class="brand">
+        <span class="brand__leaf" aria-hidden="true">🌿</span>
+        <span class="brand__name" id="appBrandName">GreenBin</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home" class="nav-link" data-auth="required">Home</a>
+        <a href="#report" class="nav-link" data-role="user">Report Issue</a>
+        <a href="#my-reports" class="nav-link" data-role="user">My Reports</a>
+        <a href="#worker" class="nav-link" data-role="worker">Worker Tasks</a>
+        <a href="#admin" class="nav-link" data-role="admin">Admin Dashboard</a>
+
+        <a href="#auth" class="nav-link" data-auth="guest">Login / Sign Up</a>
+        <span class="nav-user" data-auth="required" id="navUserGreeting"></span>
+        <button class="btn btn--ghost btn--sm nav-logout" id="logoutBtn" data-auth="required">Log Out</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- AUTH SECTION -->
+    <section id="auth" class="auth" data-auth="guest">
+      <div class="auth__blob" aria-hidden="true"></div>
+      <div class="container auth__inner">
+        <p class="eyebrow">✨ Clean Community Initiative</p>
+        <h1 class="auth__heading">Welcome to <span class="app-title-text">GreenBin</span></h1>
+        <p class="auth__text">Report waste issues, track resolution, or login as Sanitation Worker / Admin.</p>
+
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" type="button">Log In</button>
+            <button class="auth-tab" id="tabSignup" type="button">Sign Up</button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="loginForm" class="auth-form">
+            <div class="form-group">
+              <label for="loginEmail">Email / Account ID</label>
+              <input type="text" id="loginEmail" placeholder="you@email.com" autocomplete="username" />
+              <span class="error-msg" data-error-for="loginEmail"></span>
+            </div>
+            <div class="form-group password-group">
+              <label for="loginPassword">Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+                <button type="button" class="eye-btn" data-target="loginPassword" aria-label="Toggle Password Visibility">👁️</button>
+              </div>
+              <span class="error-msg" data-error-for="loginPassword"></span>
+            </div>
+            <div class="form-feedback" id="loginFeedback" role="status" aria-live="polite"></div>
+            <button type="submit" class="btn btn--primary btn--wide">Log In</button>
+          </form>
+
+          <!-- Signup Form -->
+          <form id="signupForm" class="auth-form" hidden>
+            <div class="form-group">
+              <label for="signupName">Full Name (Optional)</label>
+              <input type="text" id="signupName" placeholder="e.g. Alex (Optional)" autocomplete="name" />
+              <span class="error-msg" data-error-for="signupName"></span>
+            </div>
+            <div class="form-group">
+              <label for="signupEmail">Email (Optional)</label>
+              <input type="text" id="signupEmail" placeholder="you@email.com (Optional)" autocomplete="email" />
+              <span class="error-msg" data-error-for="signupEmail"></span>
+            </div>
+            <div class="form-group password-group">
+              <label for="signupPassword">Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="signupPassword" placeholder="At least 6 characters" autocomplete="new-password" />
+                <button type="button" class="eye-btn" data-target="signupPassword" aria-label="Toggle Password Visibility">👁️</button>
+              </div>
+              <span class="error-msg" data-error-for="signupPassword"></span>
+            </div>
+            <div class="form-group">
+              <label for="signupRole">Account Type</label>
+              <select id="signupRole">
+                <option value="user">Resident / Citizen</option>
+                <option value="worker">Sanitation Worker</option>
+              </select>
+            </div>
+            <div class="form-feedback" id="signupFeedback" role="status" aria-live="polite"></div>
+            <button type="submit" class="btn btn--primary btn--wide">Create Account</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOME SECTION -->
+    <section id="home" class="home" data-auth="required">
+      <div class="container home__inner">
+        <div class="hero-badge">🌱 Fast • Transparent • Community-Driven</div>
+        <h1 class="home__heading">Keep <span class="app-title-text">GreenBin</span> Clean & Green</h1>
+        <p class="home__text">
+          Snap a picture of overflowing bins or littered spots. Workers upload clean-up proof in real time.
+        </p>
+
+        <!-- Dynamic Action Buttons based on user role -->
+        <div id="homeActionContainer">
+          <button class="btn btn--primary btn--hero" id="reportIssueBtn" data-role="user">🚀 Report an Issue Now</button>
+          <a href="#worker" class="btn btn--primary btn--hero" data-role="worker" style="text-decoration:none;">🧹 View Cleaning Tasks</a>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats" id="statsGrid">
+          <div class="stat-card stat-card--total">
+            <span class="stat-card__icon">📋</span>
+            <span class="stat-card__value" id="statTotal">0</span>
+            <span class="stat-card__label">Total Reports</span>
+          </div>
+          <div class="stat-card stat-card--pending">
+            <span class="stat-card__icon">🟠</span>
+            <span class="stat-card__value" id="statPending">0</span>
+            <span class="stat-card__label">Pending</span>
+          </div>
+          <div class="stat-card stat-card--progress">
+            <span class="stat-card__icon">🔵</span>
+            <span class="stat-card__value" id="statProgress">0</span>
+            <span class="stat-card__label">In Progress</span>
+          </div>
+          <div class="stat-card stat-card--resolved">
+            <span class="stat-card__icon">✅</span>
+            <span class="stat-card__value" id="statResolved">0</span>
+            <span class="stat-card__label">Cleaned & Resolved</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORT ISSUE FORM (User Only) -->
+    <section id="report" class="report" data-role="user">
+      <div class="container">
+        <h2 class="section-title">📝 Report an Issue</h2>
+        <p class="section-subtitle">Fill in details below. Photo upload is mandatory to help workers locate the issue faster.</p>
+
+        <form id="reportForm" class="report-form" novalidate>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reporterName">Full Name (Optional)</label>
+              <input type="text" id="reporterName" name="reporterName" placeholder="e.g. Anonymous / Alex" />
+            </div>
+
+            <div class="form-group">
+              <label for="reporterContact">Email / Mobile (Optional)</label>
+              <input type="text" id="reporterContact" name="reporterContact" placeholder="e.g. phone or email" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="location">Location <span class="required">*</span></label>
+              <input type="text" id="location" name="location" placeholder="e.g. Block C, Near Main Gate" />
+              <span class="error-msg" data-error-for="location"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="issueType">Issue Type <span class="required">*</span></label>
+              <select id="issueType" name="issueType">
+                <option value="">Select issue type</option>
+                <option value="Overflowing Bin">🗑️ Overflowing Bin</option>
+                <option value="Littered Area">🚯 Littered Area</option>
+                <option value="Missed Collection">🚛 Missed Collection</option>
+                <option value="Other">❓ Other</option>
+              </select>
+              <span class="error-msg" data-error-for="issueType"></span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description <span class="required">*</span></label>
+            <textarea id="description" name="description" rows="3" placeholder="Provide additional details..."></textarea>
+            <span class="error-msg" data-error-for="description"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="imageUpload">Before Photo Upload <span class="required">* (Compulsory)</span></label>
+            <input type="file" id="imageUpload" name="imageUpload" accept="image/*" />
+            <span class="error-msg" data-error-for="imageUpload"></span>
+            <div class="image-preview" id="imagePreview" hidden>
+              <img id="previewImg" src="" alt="Preview of uploaded issue photo" />
+              <button type="button" class="image-preview__remove" id="removeImageBtn">✕</button>
+            </div>
+          </div>
+
+          <div class="form-feedback" id="formFeedback" role="status" aria-live="polite"></div>
+          <button type="submit" class="btn btn--primary btn--wide">Submit Complaint</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- MY REPORTS SECTION (User) -->
+    <section id="my-reports" class="my-reports" data-role="user">
+      <div class="container">
+        <h2 class="section-title">📂 My Submitted Reports</h2>
+        <p class="section-subtitle">Track the status of your reported issues and view cleaned proof photos uploaded by sanitation workers.</p>
+
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="searchReports" placeholder="Search by Report ID or Location..." />
+        </div>
+
+        <div class="reports-grid" id="reportsList"></div>
+        <p class="empty-state" id="reportsEmptyState" hidden>🌱 No reports found.</p>
+      </div>
+    </section>
+
+    <!-- WORKER DASHBOARD -->
+    <section id="worker" class="worker" data-role="worker">
+      <div class="container">
+        <h2 class="section-title">🧹 Sanitation Worker Dashboard</h2>
+        <p class="section-subtitle">Select an assigned issue, clean the area, enter your worker name, and upload the completion photo proof.</p>
+
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="searchWorker" placeholder="Search tasks by ID or Location..." />
+        </div>
+
+        <div class="worker-grid" id="workerTasksList"></div>
+        <p class="empty-state" id="workerEmptyState" hidden>✅ No active tasks pending cleanup!</p>
+      </div>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="admin" class="admin" data-role="admin">
+      <div class="container">
+        <h2 class="section-title">🛠️ Admin Control Center</h2>
+        <p class="section-subtitle">Manage reports, inspect Before & After photos, send replies, and manage system credentials.</p>
+
+        <!-- Admin App & Account Config Panel -->
+        <div class="admin-config-card">
+          <h3>⚙️ Application Settings</h3>
+          <form id="adminSettingsForm" class="admin-settings-grid">
+            <div class="form-group">
+              <label for="appNameInput">Application Name</label>
+              <input type="text" id="appNameInput" placeholder="GreenBin" />
+            </div>
+            <div class="form-group">
+              <label for="adminEmailInput">Admin ID / Email</label>
+              <input type="email" id="adminEmailInput" placeholder="admin123@greenbin.com" />
+            </div>
+            <div class="form-group password-group">
+              <label for="adminPassInput">Admin Password</label>
+              <div class="password-wrapper">
+                <input type="password" id="adminPassInput" placeholder="New Password" />
+                <button type="button" class="eye-btn" data-target="adminPassInput">👁️</button>
+              </div>
+            </div>
+            <div class="form-group btn-align">
+              <button type="submit" class="btn btn--primary">Save System Settings</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="search-bar">
+          <span class="search-bar__icon">🔍</span>
+          <input type="text" id="searchAdmin" placeholder="Search by ID, Location, or Reporter..." />
+        </div>
+
+        <div class="table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID & Photos (Before/After)</th>
+                <th>Reporter Info</th>
+                <th>Location & Type</th>
+                <th>Worker Info</th>
+                <th>Status</th>
+                <th>Admin Remark</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+        <p class="empty-state" id="adminEmptyState" hidden>🌱 No reports found.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>🌿 <span class="app-title-text">GreenBin</span> — Clean Communities Powered by Citizens & Workers.</p>
+  </footer>
+
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
